@@ -10,13 +10,22 @@
 
 - **Sector:** CivicTech — transparencia pública, anticorrupción
 - **Alcance:** Funcionarios públicos peruanos (municipal, regional, nacional)
-- **Estado actual:** Concepto definido — modelo IER en diseño
+- **Estado actual:** Concepto definido — modelo IER en diseño, frontend en especificación
 - **Repositorio:** github.com/rodhandev/garendil (público)
 - **Dominio futuro:** garendil.pe (pendiente)
 
 ### Etimología del nombre
 
 **Garendil** = **Gar** (Sindarin: sostener, guardar) + **en** (Quenya: fluir) + **dil** (Quenya: devoto, el que sirve con amor). Significado compuesto: *"El guardián devoto"* o *"el que sostiene con devoción lo que fluye"*. El nombre refleja la misión del proyecto: custodiar la verdad pública de forma permanente y sin ceder.
+
+---
+
+## Documentación del proyecto
+
+| Archivo | Contenido |
+|---|---|
+| `CLAUDE.md` | Este archivo — contexto global para LLM |
+| `docs/14-frontend-ux.md` | Especificación completa del frontend UI/UX |
 
 ---
 
@@ -35,6 +44,16 @@ El **IER** es un score numérico de **0 a 100** por funcionario que cruza múlti
 
 Un score más alto indica mayor exposición al riesgo de corrupción. El score es **público, trazable y auditable** — cada punto del IER debe tener una fuente verificable.
 
+### Modelo de scoring
+
+Arquitectura de 3 capas (en orden de implementación):
+
+1. **Reglas explícitas** — umbrales deterministas por dimensión (exoneración, condena, etc.)
+2. **Anomaly detection** — Isolation Forest para detectar patrones fuera de distribución
+3. **ML supervisado** — clasificador entrenado con casos etiquetados (fase futura)
+
+Referencia de arquitectura transferible: **Serenata de Amor** (`okfn-brasil`).
+
 ---
 
 ## Stack tecnológico
@@ -42,11 +61,17 @@ Un score más alto indica mayor exposición al riesgo de corrupción. El score e
 ```
 Backend:     Python · FastAPI · PostgreSQL
 Scraping:    BeautifulSoup / Scrapy (datos abiertos peruanos)
+Frontend:    Next.js (App Router) + Tailwind CSS
+Grafo:       vis.js Network (preferido) o D3.js force-directed
 LLM:         Claude (procesamiento de documentos, destilación, análisis)
 Formatos:    .md como formato primario para LLM (38% menos tokens que JSON)
              CSV incrustado en .md para datos tabulares masivos
              YAML para relaciones jerárquicas (funcionario → institución → contratos)
+Pagos:       Culqi (donativos)
+Hosting:     Render o Hetzner VPS
 ```
+
+> **Nota de migración:** el frontend existente usa Vite + React. Debe migrarse a **Next.js con App Router** para habilitar SSR en perfiles de funcionarios (SEO — perfiles indexables por Google).
 
 ### Por qué .md como formato primario
 
@@ -55,6 +80,23 @@ Los archivos `.md` son el formato óptimo como fuente para LLMs:
 - Son legibles por humanos para auditoría
 - Permiten incrustar CSV y YAML para datos estructurados
 - Evitar JSON como fuente directa al LLM salvo casos específicos de APIs
+
+---
+
+## Fuentes de datos públicos
+
+| Fuente | API disponible | Método | Prioridad |
+|---|---|---|---|
+| OSCE/SEACE — contratos | ✅ API REST (OCDS) | API — estándar OCDS | 1 |
+| MEF Portal Transparencia | ❌ | Scraping | 2 |
+| INFOBRAS — obras públicas | ❌ | Scraping | 2 |
+| Contraloría General | ❌ PDFs + web | Scraping + PDF parsing | 2 |
+| Poder Judicial | ❌ | Scraping | 2 |
+| SERVIR — historial funcionarios | TBD | TBD | 2 |
+| RENIEC | ❌ Solo convenio Estado | No viable fase 1 | — |
+| SUNAT declaraciones privadas | ❌ No pública | No viable fase 1 | — |
+| SPIJ — jurisprudencia | TBD | TBD | 3 |
+| El Peruano — normas legales | TBD | TBD | 3 |
 
 ---
 
@@ -124,6 +166,10 @@ Score bidimensional por funcionario que mide dos ejes complementarios:
 
 **Output:** Score dual (Inteligencia / Moral) visible en el perfil público del funcionario, con historial de evolución longitudinal.
 
+### Módulo 13 · LexGraph
+
+Derecho modelado como grafo de precedentes judiciales. Capa de conocimiento jurídico con Neo4j o Kuzu como núcleo. Se integra con el Módulo 10 para enriquecer el contexto legal de cada proceso.
+
 ---
 
 ## Marco legal habilitante
@@ -148,26 +194,19 @@ Todo el sistema opera dentro del marco de datos públicos — no hay extracción
 | Alianza con universidad | Legitimidad académica, rigor | Lento, burocrático |
 | Periodismo de datos + patrocinios | Alcance masivo | Difícil de monetizar directamente |
 
----
-
-## Fuentes de datos públicos a mapear
-
-- SUNAT — declaraciones juradas de bienes
-- SERVIR — historial de funcionarios, procesos disciplinarios
-- Contraloría General de la República
-- Poder Judicial — sentencias y procesos penales
-- SEACE — contratos con el Estado
-- Portal de Transparencia Estándar
-- SPIJ — Sistema Peruano de Información Jurídica
-- El Peruano — normas legales oficiales
+Integración Culqi habilitada en el frontend para donativos directos.
 
 ---
 
 ## Próximos pasos globales del proyecto
 
+- [ ] Migrar frontend de Vite+React a Next.js (App Router)
+- [ ] Construir homepage con buscador por DNI
+- [ ] Construir página de perfil `/perfil/[dni]` con SSR
 - [ ] Mapear todas las fuentes de datos públicos disponibles y sus APIs/portales
 - [ ] Diseñar metodología de scoring IER v1 (ponderación de factores)
 - [ ] Scraping piloto de 100 funcionarios para validar datos
+- [ ] Integrar visualización de grafo (vis.js)
 - [ ] Definir modelo de sostenibilidad
 - [ ] Buscar aliados: universidades, ONGs anticorrupción, medios de comunicación
 - [ ] Definir si el módulo jurídico es parte de Garendil o proyecto independiente (LegalIA Perú)
@@ -210,3 +249,6 @@ Cuando trabajes en este proyecto:
 - La lógica difusa es el motor apropiado para ambigüedad legal y moral
 - El proyecto es **peruano** — las fuentes de datos, leyes y contexto son del sistema público peruano
 - Cuando generes esquemas `.md` para eventos de noticias o módulos jurídicos, seguir las estructuras definidas en este documento
+- La especificación completa del frontend está en `docs/14-frontend-ux.md` — leer ese archivo antes de tocar cualquier código del frontend
+- El perfil psicológico inferido **siempre** debe incluir el disclaimer prominente definido en `docs/14-frontend-ux.md`
+- El score IER se muestra siempre en `font-mono` con color semántico
