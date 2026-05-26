@@ -68,10 +68,11 @@ Formatos:    .md como formato primario para LLM (38% menos tokens que JSON)
              CSV incrustado en .md para datos tabulares masivos
              YAML para relaciones jerárquicas (funcionario → institución → contratos)
 Pagos:       Culqi (donativos)
-Hosting:     Render o Hetzner VPS
+Hosting:     Hetzner VPS (backend + Neo4j + workers)
+             Vercel (frontend Next.js)
+             Supabase (auth + tablas relacionales)
 ```
 
-> **Nota de migración:** el frontend existente usa Vite + React. Debe migrarse a **Next.js con App Router** para habilitar SSR en perfiles de funcionarios (SEO — perfiles indexables por Google).
 
 ### Por qué .md como formato primario
 
@@ -200,16 +201,16 @@ Integración Culqi habilitada en el frontend para donativos directos.
 
 ## Próximos pasos globales del proyecto
 
-- [ ] Migrar frontend de Vite+React a Next.js (App Router)
-- [ ] Construir homepage con buscador por DNI
-- [ ] Construir página de perfil `/perfil/[dni]` con SSR
-- [ ] Mapear todas las fuentes de datos públicos disponibles y sus APIs/portales
-- [ ] Diseñar metodología de scoring IER v1 (ponderación de factores)
-- [ ] Scraping piloto de 100 funcionarios para validar datos
-- [ ] Integrar visualización de grafo (vis.js)
-- [ ] Definir modelo de sostenibilidad
-- [ ] Buscar aliados: universidades, ONGs anticorrupción, medios de comunicación
-- [ ] Definir si el módulo jurídico es parte de Garendil o proyecto independiente (LegalIA Perú)
+> Ver ROADMAP.md para el estado actualizado de tareas por fase.
+
+**Fase 1 — MVP frontend + buscador (en curso)**
+- [ ] Inicializar Next.js App Router en apps/web/
+- [ ] Diseño system: tokens, paleta, tipografía
+- [ ] Homepage con buscador por DNI
+- [ ] Página de perfil `/perfil/[dni]` con SSR
+- [ ] Visualización de grafo básica (vis.js)
+- [ ] Auth con Supabase (registro + login)
+- [ ] Sección de donativos con Culqi
 
 ---
 
@@ -252,3 +253,8 @@ Cuando trabajes en este proyecto:
 - La especificación completa del frontend está en `docs/14-frontend-ux.md` — leer ese archivo antes de tocar cualquier código del frontend
 - El perfil psicológico inferido **siempre** debe incluir el disclaimer prominente definido en `docs/14-frontend-ux.md`
 - El score IER se muestra siempre en `font-mono` con color semántico
+- Antes de tocar cualquier archivo, leer STATUS.md y DECISIONS.md
+- Las decisiones de arquitectura están en DECISIONS.md (DEC-001 a
+  DEC-014) — no debatirlas, solo implementarlas
+- El repositorio canónico es github.com/garendil/garendil —
+  nunca hacer push a rodhandev/garendil
