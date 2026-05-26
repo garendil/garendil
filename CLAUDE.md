@@ -11,7 +11,7 @@
 - **Sector:** CivicTech — transparencia pública, anticorrupción
 - **Alcance:** Funcionarios públicos peruanos (municipal, regional, nacional)
 - **Estado actual:** Concepto definido — modelo IER en diseño, frontend en especificación
-- **Repositorio:** github.com/rodhandev/garendil (público)
+- **Repositorio:** github.com/garendil/garendil (público)
 - **Dominio futuro:** garendil.pe (pendiente)
 
 ### Etimología del nombre
