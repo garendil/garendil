@@ -68,6 +68,7 @@ Formatos:    .md como formato primario para LLM (38% menos tokens que JSON)
              CSV incrustado en .md para datos tabulares masivos
              YAML para relaciones jerárquicas (funcionario → institución → contratos)
 Pagos:       Culqi (donativos)
+Paquetes:    pnpm (nunca npm ni yarn)
 Hosting:     Hetzner VPS (backend + Neo4j + workers)
              Vercel (frontend Next.js)
              Supabase (auth + tablas relacionales)
@@ -258,3 +259,4 @@ Cuando trabajes en este proyecto:
   DEC-014) — no debatirlas, solo implementarlas
 - El repositorio canónico es github.com/garendil/garendil —
   nunca hacer push a rodhandev/garendil
+- Package manager: **pnpm** siempre — nunca `npm install` ni `yarn`
