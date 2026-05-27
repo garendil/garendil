@@ -131,3 +131,23 @@ SDK React en frontend + API REST en backend.
 github.com/garendil. La cuenta personal rodhandev NO es propietaria
 de ningún repo de Garendil.
 **Supersede:** Referencia anterior a github.com/rodhandev/garendil
+
+---
+
+## DEC-015 · Herramientas candidatas para RAG con embeddings
+**Fecha:** 2026-05-27
+**Estado:** 🔵 Pendiente de elección
+**Decisión:** Se evaluarán dos herramientas de vector database para
+implementar la capa RAG (Retrieval-Augmented Generation) con embeddings:
+
+- **Qdrant** — vector DB open source, auto-hosteable en Hetzner VPS.
+  Escrito en Rust: alto rendimiento, bajo consumo de memoria.
+  Opción preferida si el deployment es propio.
+- **Pinecone** — vector DB gestionado (SaaS). Sin infraestructura
+  que mantener. Más rápido para prototipar, pero datos fuera de
+  nuestra infra y con costo por uso.
+
+**Casos de uso previstos:** búsqueda semántica sobre documentos
+jurídicos, noticias, contratos OSCE y resoluciones de Contraloría.
+**Decisión de elección:** pendiente — depende de si el deployment
+final es self-hosted (Hetzner → Qdrant) o gestionado (→ Pinecone).
