@@ -5,66 +5,76 @@
 
 ---
 
-## Estructura actual del repo
+## Ecosistema Garendil — repos activos en GitHub
 
-Este repo (`garendil/garendil`) es el **brain/docs** del proyecto.
-El código de desarrollo activo está en el monorepo local (no públicado aún en GitHub).
-
-### Lo que existe aquí
-
-| Ruta | Estado | Notas |
-|------|--------|-------|
-| `CLAUDE.md` | ✅ Completo | Contexto total para LLM. Vigente. |
-| `DECISIONS.md` | ✅ Completo | DEC-001 a DEC-015 vigentes |
-| `ROADMAP.md` | ✅ Vigente | Fases 0–3 definidas |
-| `SESSIONS.md` | ✅ 1 sesión | Sesión 001 (2026-05-25) |
-| `TROUBLESHOOTING.md` | ✅ Existe | — |
-| `AGENTS-PROTOCOL.md` | ✅ Existe | — |
-| `apps/web/` | ⚠️ Scaffold | Next.js 14 + Supabase + Tailwind. page.tsx = placeholder ("Garendil" texto). Sin auth, sin buscador real. |
-| `apps/api/` | ⚠️ Scaffold | FastAPI + /health. Ambos endpoints en routers/funcionarios.py retornan 501. Sin scoring. |
-| `workers/scraper/osce_worker.py` | 🔶 Parcial | fetch_contratos() funciona. Sin storage a Supabase aún. |
-| `infra/neo4j/schema.cypher` | ✅ Completo | Constraints + indexes para Funcionario, Empresa, Contrato, Institucion |
-| `infra/supabase/migrations/001_initial_schema.sql` | ✅ Real | profiles table + RLS policies |
-| `docs/14-frontend-ux.md` | ✅ Completo | Especificación UI/UX de referencia |
+| Repo | URL | Estado | Contenido |
+|------|-----|--------|-----------|
+| `garendil/garendil` | github.com/garendil/garendil | ✅ Brain/docs | CLAUDE.md, DECISIONS, ROADMAP, SESSIONS, docs/ |
+| `garendil/garendil-api` | github.com/garendil/garendil-api | ✅ Pusheado hoy | FastAPI v0.7 — 60+ endpoints, IER Layer1/2/3 |
+| `garendil/garendil-web` | github.com/garendil/garendil-web | ✅ Pusheado hoy | Next.js 14 — homepage completa, perfil SSR |
+| `garendil/garendil-infra` | github.com/garendil/garendil-infra | ✅ Pusheado hoy | docker-compose, k8s, nginx |
 
 ---
 
-## Código de desarrollo activo (fuera de este repo)
+## Workspace local
 
-El monorepo local tiene **v0.7** con:
+```
+/home/rodri/garendil-workspace/
+  CLAUDE.md              ← índice del workspace
+  garendil-brain/        ← clone garendil/garendil (este repo)
+  garendil-api/          ← FastAPI v0.7 (98 archivos tracked)
+  garendil-web/          ← Next.js v0.7 (25 archivos tracked)
+  garendil-infra/        ← docker-compose + k8s (14 archivos)
+  garendil-workers/      ← placeholder (scraping workers pendientes)
+```
 
-- FastAPI: 60+ endpoints, IER Layer1/Layer2/Layer3, Redis cache, Prometheus
-- Next.js: homepage completa (buscador DNI, stats, perfiles recientes, metodología)
-- Scoring: ScoringLayer ABC, IERCalculatorV3, RandomForest (layer3 weight=0.0 hasta datos etiquetados)
+---
+
+## Estado del código — garendil-api (v0.7)
+
+- FastAPI: 60+ endpoints activos
+- Motor IER: Layer1Scorer + Layer2Scorer (IsolationForest) + Layer3Scorer (RandomForest, weight=0.0)
+- IERCalculatorV3: pesos configurables, auditable
+- Redis cache: TTL 7 días (redis.asyncio)
+- Prometheus + Sentry + audit trail
 - Tests: 27/27 passing
+- DB: PostgreSQL local (pendiente migrar a Supabase)
+- Grafo: Neo4j local (pendiente conectar a Neo4j en Hetzner)
 
-Este código NO está en garendil/garendil aún.
-Próximo paso: organizar en garendil-workspace y subir repos separados.
+## Estado del código — garendil-web (v0.7)
+
+- Homepage: hero + buscador DNI + stats counter + perfiles recientes + metodología + footer
+- /perfil/[dni]: SSR, grafo vis.js, historial contratos, exportar .md
+- /grafo: placeholder
+- /metodologia: spec completa del modelo IER
+- Admin dashboard: /admin + /admin/status
+- Build: 0 errores, 8/8 páginas
 
 ---
 
 ## Pendiente inmediato
 
-- [ ] Crear `/home/rodri/garendil-workspace/` con repos separados (siguiendo patrón zhinova-workspace)
-- [ ] Subir garendil-api (FastAPI v0.7) a GitHub bajo org garendil
-- [ ] Subir garendil-web (Next.js v0.7) a GitHub bajo org garendil
-- [ ] Conectar garendil-api a Supabase real (reemplazar PostgreSQL local)
-- [ ] Implementar auth Supabase en garendil-web (DEC-009)
-- [ ] Conectar homepage buscador DNI al backend real
-
----
-
-## Inconsistencias detectadas
-
-- `README.md` menciona nombres viejos: **Integritas**, **Mírantir**, **scikit-fuzzy**, **NetworkX** — todos reemplazados. Perplexity debe actualizar README.
-- `ROADMAP.md` marca Fase 1 como no iniciada, pero el scaffold de Next.js ya existe.
-- `apps/web/package.json` no incluye `lucide-react` ni `vis-network` (ambos en uso en v0.7 local).
+- [ ] **Conectar garendil-api a Supabase** (reemplazar PostgreSQL local por Supabase)
+- [ ] **Deploy garendil-api** en Hetzner VPS (DEC-005)
+- [ ] **Deploy garendil-web** en Vercel (DEC-004)
+- [ ] **Implementar auth Supabase** en garendil-web (DEC-009)
+- [ ] **Conectar buscador DNI** al backend real (homepage → /api/search)
+- [ ] **Layer3 training**: requiere datos etiquetados del Poder Judicial (≥50 samples)
 
 ---
 
 ## Alertas para Perplexity
 
-1. **README.md desactualizado** — mencionar al usuario que hay que actualizarlo con stack real.
-2. **Dos repos de código:** este repo (brain) y el monorepo local (v0.7 dev). En la próxima sesión se unificarán bajo garendil-workspace.
-3. **DEC-015 pendiente:** elegir entre Qdrant (self-hosted Hetzner) y Pinecone (SaaS) para RAG/embeddings. No bloquea MVP pero hay que decidir antes de Fase 3.
-4. **garendil-api no conecta a Supabase** — ambos endpoints retornan 501. Sin backend real hasta subir el v0.7 local.
+1. **README.md de garendil/garendil desactualizado** — menciona Integritas, Mírantir, scikit-fuzzy, NetworkX. Debe actualizarse.
+2. **DEC-015 pendiente**: elegir Qdrant vs Pinecone para RAG. No bloquea MVP.
+3. **garendil-workers vacío** — solo placeholder. Workers de OSCE/MEF/Contraloría no implementados aún.
+4. **garendil-api usa PostgreSQL local** — requiere migración a Supabase antes del deploy.
+5. **Ambiente de desarrollo**: docker-compose en garendil-infra levanta PostgreSQL + Neo4j + Redis locales.
+
+---
+
+## Inconsistencias conocidas
+
+- garendil/garendil `apps/web/` y `apps/api/` son scaffold antiguo — el código real está en garendil-web y garendil-api.
+- `package.json` en garendil/garendil/apps/web/ falta lucide-react y vis-network.
+- ROADMAP.md marca Fase 1 sin iniciar pero garendil-web ya tiene homepage completa.
