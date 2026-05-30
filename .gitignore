@@ -29,3 +29,10 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+
+# graphify cache (generado automáticamente)
+graphify-out/cache/
+graphify-out/cost.json
+
+# Archivos de sesión local
+last-session
