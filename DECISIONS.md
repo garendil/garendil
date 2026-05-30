@@ -53,12 +53,13 @@ Workers de scraping también en Hetzner. No usar Render para workers.
 
 ---
 
-## DEC-006 · Auth y tablas relacionales: Supabase
+## DEC-006 · Auth y sesiones: Supabase Auth
 **Fecha:** 2026-05-17
 **Estado:** ✅ Vigente
-**Decisión:** Supabase gestiona auth, sesiones de usuario y datos
-tabulares relacionales. Sin cuentas de administrador especiales —
+**Decisión:** Supabase gestiona auth y sesiones de usuario.
+Sin cuentas de administrador especiales —
 gestión directa vía Supabase dashboard y SSH a Hetzner.
+**Ver también:** DEC-016 (Supabase como DB principal)
 
 ---
 
@@ -151,3 +152,25 @@ implementar la capa RAG (Retrieval-Augmented Generation) con embeddings:
 jurídicos, noticias, contratos OSCE y resoluciones de Contraloría.
 **Decisión de elección:** pendiente — depende de si el deployment
 final es self-hosted (Hetzner → Qdrant) o gestionado (→ Pinecone).
+
+---
+
+## DEC-016 · Base de datos principal: Supabase (PostgreSQL gestionado)
+**Fecha:** 2026-05-29
+**Estado:** ✅ Vigente
+**Decisión:** garendil-api migra de PostgreSQL local a Supabase como
+base de datos principal. SQLAlchemy se conecta vía connection string de
+Supabase (postgresql://). Supabase gestiona también auth (DEC-006),
+RLS y migraciones (archivo base: supabase/migrations/001_initial_schema.sql
+en garendil-infra).
+**Descartado:** PostgreSQL local standalone en Hetzner como DB principal.
+**Motivo:** Unificar auth + DB + RLS en una sola plataforma reduce
+complejidad operacional. Supabase es PostgreSQL compatible — sin cambios
+en SQLAlchemy ni en los modelos del ORM.
+**Impacto en garendil-api:**
+- Reemplazar `DATABASE_URL` local por connection string de Supabase
+- Usar `supabase-py` solo para operaciones de auth y storage;
+  SQLAlchemy sigue siendo el ORM para queries de negocio
+- Habilitar RLS en tablas de usuarios según migration 001
+**Siguiente paso:** Claude Code conecta garendil-api a Supabase
+(reemplaza `DATABASE_URL`, verifica migraciones, ejecuta tests).
