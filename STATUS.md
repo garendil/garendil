@@ -1,80 +1,99 @@
-# STATUS — 2026-05-29
+# STATUS.md — Estado en tiempo real
 
-> Escrito por Claude Code. Se sobreescribe completo cada sesión.
-> Perplexity lo lee al inicio pero nunca lo modifica.
-
----
-
-## Ecosistema Garendil — repos activos en GitHub
-
-| Repo | URL | Estado | Contenido |
-|------|-----|--------|-----------|
-| `garendil/garendil` | github.com/garendil/garendil | ✅ Brain/docs | CLAUDE.md, DECISIONS, ROADMAP, SESSIONS, docs/ |
-| `garendil/garendil-api` | github.com/garendil/garendil-api | ✅ Pusheado hoy | FastAPI v0.7 — 60+ endpoints, IER Layer1/2/3 |
-| `garendil/garendil-web` | github.com/garendil/garendil-web | ✅ Pusheado hoy | Next.js 14 — homepage completa, perfil SSR |
-| `garendil/garendil-infra` | github.com/garendil/garendil-infra | ✅ Pusheado hoy | docker-compose, k8s, nginx |
+> Este archivo lo escribe Claude Code al inicio/fin de cada sesión.
+> Se sobreescribe completo. No tiene historial acumulado.
+> Perplexity lo lee al inicio de cada sesión pero nunca lo modifica.
 
 ---
 
-## Workspace local
-
-```
-/home/rodri/garendil-workspace/
-  CLAUDE.md              ← índice del workspace
-  garendil-brain/        ← clone garendil/garendil (este repo)
-  garendil-api/          ← FastAPI v0.7 (98 archivos tracked)
-  garendil-web/          ← Next.js v0.7 (25 archivos tracked)
-  garendil-infra/        ← docker-compose + k8s (14 archivos)
-  garendil-workers/      ← placeholder (scraping workers pendientes)
-```
+## Sesión actual
+- **Fecha:** 2026-05-29
+- **Agente:** Claude Code
+- **Estado:** Migración monorepo → repos separados completada
 
 ---
 
-## Estado del código — garendil-api (v0.7)
+## Qué se hizo en esta sesión
 
-- FastAPI: 60+ endpoints activos
-- Motor IER: Layer1Scorer + Layer2Scorer (IsolationForest) + Layer3Scorer (RandomForest, weight=0.0)
-- IERCalculatorV3: pesos configurables, auditable
-- Redis cache: TTL 7 días (redis.asyncio)
-- Prometheus + Sentry + audit trail
+1. **Auditoría de diferencias** — comparado monorepo vs repos separados archivo por archivo
+2. **garendil-api** — agregado `.env.example` faltante del monorepo
+3. **garendil-web** — sincronizados desde monorepo:
+   - `.env.example`
+   - `lib/supabase/client.ts` + `server.ts` (Supabase SSR)
+   - `middleware.ts` (protección de rutas para DEC-009)
+   - `app/(auth)/login/page.tsx` + `register/page.tsx` (placeholders auth)
+   - `package.json` actualizado con `@supabase/ssr` + `@supabase/supabase-js`
+4. **garendil-infra** — sincronizados desde monorepo:
+   - `neo4j/schema.cypher` (constraints + indexes)
+   - `supabase/migrations/001_initial_schema.sql` (profiles + RLS)
+5. **garendil-workers** — creado repo en GitHub, pusheado `scraper/osce_worker.py`
+6. **garendil/garendil (este repo)** — convertido a brain puro:
+   - `git rm -r apps/ infra/ workers/ package.json` (25 archivos de código)
+   - `graphify-out/cache/` excluido del tracking (124 JSONs)
+   - `.gitignore` actualizado
+
+---
+
+## Estado de cada repo tras la migración
+
+### garendil/garendil — Brain (docs only) ✅
+**Contiene:** CLAUDE.md, DECISIONS.md (DEC-001 a DEC-015), ROADMAP.md, SESSIONS.md,
+TROUBLESHOOTING.md, AGENTS-PROTOCOL.md, README.md, docs/, graphify-out/, prompts/
+**No contiene:** ningún código fuente
+
+### garendil/garendil-api ✅
+**Contiene:** FastAPI v0.7
+- 60+ endpoints (search, perfil, scoring, admin, batch, metrics)
+- Motor IER: Layer1Scorer (weight=0.7) + Layer2Scorer IsolationForest (weight=0.3) + Layer3Scorer RandomForest (weight=0.0)
+- Redis cache TTL 7 días, Prometheus metrics, Sentry, audit trail
 - Tests: 27/27 passing
-- DB: PostgreSQL local (pendiente migrar a Supabase)
-- Grafo: Neo4j local (pendiente conectar a Neo4j en Hetzner)
+- `.env.example` con Supabase + Neo4j vars
+- **DB actual:** PostgreSQL local (pendiente migrar a Supabase)
+- **Grafo:** Neo4j local (pendiente conectar Hetzner)
 
-## Estado del código — garendil-web (v0.7)
-
-- Homepage: hero + buscador DNI + stats counter + perfiles recientes + metodología + footer
-- /perfil/[dni]: SSR, grafo vis.js, historial contratos, exportar .md
-- /grafo: placeholder
-- /metodologia: spec completa del modelo IER
-- Admin dashboard: /admin + /admin/status
+### garendil/garendil-web ✅
+**Contiene:** Next.js 14 v0.7
+- Homepage: hero + buscador DNI + stats + perfiles recientes + metodología + footer
+- `/perfil/[dni]`: SSR, grafo vis.js, historial contratos, exportar .md
+- `/grafo`: placeholder (pendiente Neo4j)
+- `/metodologia`: spec completa del modelo IER
+- Admin dashboard: `/admin` + `/admin/status`
+- Auth: `lib/supabase/client.ts + server.ts`, `middleware.ts`, login/register placeholders
 - Build: 0 errores, 8/8 páginas
+- **Auth:** NO implementada aún (solo scaffolding)
+
+### garendil/garendil-infra ✅
+**Contiene:**
+- `docker-compose.yml`: PostgreSQL + Neo4j + Redis para desarrollo local
+- `k8s/`: namespace, deployment, HPA, PVC, secrets (CHANGE_ME), configmap
+- `nginx.conf`: proxy reverso
+- `neo4j/schema.cypher`: constraints + indexes
+- `supabase/migrations/001_initial_schema.sql`: profiles + RLS
+- `scripts/`: setup-env, build-docker, deploy-k8s
+
+### garendil/garendil-workers ✅
+**Contiene:**
+- `scraper/osce_worker.py`: fetch desde API OCDS OSCE (fetch funciona, storage pendiente)
+- `scraper/requirements.txt`: scrapy, httpx, celery, redis, supabase, neo4j
+- `README.md`: workers planificados (MEF, Contraloría, Poder Judicial)
 
 ---
 
-## Pendiente inmediato
+## Qué está pendiente
 
-- [ ] **Conectar garendil-api a Supabase** (reemplazar PostgreSQL local por Supabase)
+- [ ] **Conectar garendil-api a Supabase** (reemplazar PostgreSQL local)
 - [ ] **Deploy garendil-api** en Hetzner VPS (DEC-005)
 - [ ] **Deploy garendil-web** en Vercel (DEC-004)
-- [ ] **Implementar auth Supabase** en garendil-web (DEC-009)
-- [ ] **Conectar buscador DNI** al backend real (homepage → /api/search)
-- [ ] **Layer3 training**: requiere datos etiquetados del Poder Judicial (≥50 samples)
+- [ ] **Implementar auth Supabase** en garendil-web — login/register funcionales (DEC-009)
+- [ ] **Conectar buscador DNI** al backend real
+- [ ] **garendil-workers:** implementar storage a Supabase en osce_worker
+- [ ] **Layer3 training:** requiere ≥50 samples etiquetados del Poder Judicial
 
 ---
 
 ## Alertas para Perplexity
 
-1. **README.md de garendil/garendil desactualizado** — menciona Integritas, Mírantir, scikit-fuzzy, NetworkX. Debe actualizarse.
-2. **DEC-015 pendiente**: elegir Qdrant vs Pinecone para RAG. No bloquea MVP.
-3. **garendil-workers vacío** — solo placeholder. Workers de OSCE/MEF/Contraloría no implementados aún.
-4. **garendil-api usa PostgreSQL local** — requiere migración a Supabase antes del deploy.
-5. **Ambiente de desarrollo**: docker-compose en garendil-infra levanta PostgreSQL + Neo4j + Redis locales.
-
----
-
-## Inconsistencias conocidas
-
-- garendil/garendil `apps/web/` y `apps/api/` son scaffold antiguo — el código real está en garendil-web y garendil-api.
-- `package.json` en garendil/garendil/apps/web/ falta lucide-react y vis-network.
-- ROADMAP.md marca Fase 1 sin iniciar pero garendil-web ya tiene homepage completa.
+1. **README.md actualizado** — Perplexity actualizó README.md y ROADMAP.md y SESSIONS.md en la misma sesión. Revisar que reflejen el stack real (Next.js, FastAPI, Supabase, no Integritas/scikit-fuzzy).
+2. **DEC-015 pendiente:** elegir Qdrant vs Pinecone para RAG/embeddings. No bloquea MVP.
+3. **garendil-api usa PostgreSQL local** — el código del API usa SQLAlchemy con Postgres. Antes del deploy, hay que decidir si migrar a Supabase (via supabase-py) o mantener Postgres y solo usar Supabase para auth.
+4. **`__pycache__/` en garendil-api** — hay archivos `.pyc` tracked en git. Perplexity debe agregar `**/__pycache__/` al `.gitignore` de garendil-api en próxima sesión.
