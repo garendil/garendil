@@ -112,8 +112,8 @@ tokens que JSON con el mismo contenido estructurado.
 **Estado:** ✅ Vigente
 **Decisión:** El perfil incluye perfil psicológico inferido a partir
 de conductas públicas documentadas. SIEMPRE con disclaimer visible:
-"Este análisis no constituye un diagnóstico clínico. Se basa en
-conductas públicas documentadas." Con citas a estudios académicos (APA).
+“Este análisis no constituye un diagnóstico clínico. Se basa en
+conductas públicas documentadas.” Con citas a estudios académicos (APA).
 
 ---
 
@@ -174,3 +174,28 @@ en SQLAlchemy ni en los modelos del ORM.
 - Habilitar RLS en tablas de usuarios según migration 001
 **Siguiente paso:** Claude Code conecta garendil-api a Supabase
 (reemplaza `DATABASE_URL`, verifica migraciones, ejecuta tests).
+
+---
+
+## DEC-017 · Supabase connection pooler: Transaction Pooler por defecto
+**Fecha:** 2026-05-29
+**Estado:** ✅ Vigente (con condición de migración documentada)
+**Decisión:** Usar **Transaction Pooler** (puerto 6543) como modo de
+conexion en Supabase. En `app/db/base.py`: `QueuePool(pool_size=5, max_overflow=0)`.
+
+**Cuándo migrar a Session Pooler (puerto 5432):**
+- Si se agrega un ORM que requiera estado de conexión persistente entre queries
+  (e.g. `SET` variables de sesión, advisory locks, cursors con estado)
+- Si se adopta un entorno serverless (Vercel Functions, AWS Lambda) para el backend
+  → en ese caso Supabase recomienda `NullPool` + Session Pooler
+- Si aparecen errores de tipo `prepared statement already exists` en PostgreSQL
+  (síntoma clásico de Transaction Pooler con asyncpg + prepared statements)
+
+**Cambio requerido al migrar:**
+```python
+# app/db/base.py — si se migra a Session Pooler (puerto 5432)
+from sqlalchemy.pool import NullPool
+engine = create_async_engine(SUPABASE_DB_URL, poolclass=NullPool)
+# SUPABASE_DB_URL debe apuntar al puerto 5432, no 6543
+```
+**Responsable del cambio:** Claude Code (instruir explícitamente cuando aplique).
