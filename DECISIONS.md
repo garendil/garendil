@@ -73,7 +73,7 @@ funcionarios, empresas y contratos. Corre en el mismo VPS de Hetzner.
 
 ## DEC-008 · Visualización de grafo: global, modo Obsidian
 **Fecha:** 2026-05-17
-**Estado:** ✅ Vigente
+**Estado:** ✅ Vigente — expandido por DEC-020
 **Decisión:** vis.js Network (preferido) o D3.js force-directed.
 El grafo está disponible en todo el sitio en modo persistente,
 no como vista aislada.
@@ -92,7 +92,7 @@ no como vista aislada.
 
 ## DEC-010 · Actualización de datos: triggers + escaneo semanal
 **Fecha:** 2026-05-17
-**Estado:** ✅ Vigente
+**Estado:** ✅ Vigente — expandido por DEC-020 (noticias: scraping diario)
 **Decisión:** Triggers en fuentes de noticias principales (tiempo real)
 + escaneo semanal de fuentes menos activas (OSCE, Contraloría, etc.)
 
@@ -112,8 +112,8 @@ tokens que JSON con el mismo contenido estructurado.
 **Estado:** ✅ Vigente
 **Decisión:** El perfil incluye perfil psicológico inferido a partir
 de conductas públicas documentadas. SIEMPRE con disclaimer visible:
-“Este análisis no constituye un diagnóstico clínico. Se basa en
-conductas públicas documentadas.” Con citas a estudios académicos (APA).
+"Este análisis no constituye un diagnóstico clínico. Se basa en
+conductas públicas documentadas." Con citas a estudios académicos (APA).
 
 ---
 
@@ -137,7 +137,7 @@ de ningún repo de Garendil.
 
 ## DEC-015 · Herramientas candidatas para RAG con embeddings
 **Fecha:** 2026-05-27
-**Estado:** 🔵 Pendiente de elección
+**Estado:** 🔵 Pendiente de elección — ver DEC-020 para contexto de uso
 **Decisión:** Se evaluarán dos herramientas de vector database para
 implementar la capa RAG (Retrieval-Augmented Generation) con embeddings:
 
@@ -199,3 +199,92 @@ engine = create_async_engine(SUPABASE_DB_URL, poolclass=NullPool)
 # SUPABASE_DB_URL debe apuntar al puerto 5432, no 6543
 ```
 **Responsable del cambio:** Claude Code (instruir explícitamente cuando aplique).
+
+---
+
+## DEC-018 · Búsqueda principal: por DNI con redirect directo al perfil
+**Fecha:** 2026-05-29
+**Estado:** ✅ Vigente
+**Decisión:** Cuando el usuario busca por DNI exacto (8 dígitos), el sistema
+redirige directamente a `/perfil/[dni]` sin pasar por una página de resultados.
+Cuando busca por nombre (texto libre), muestra una lista de resultados con cards.
+La búsqueda por nombre es un filtro secundario — el flujo principal y canónico
+es DNI → perfil directo.
+**Motivo:** El DNI es un identificador inequívoco (DEC-001). Si el usuario ya sabe
+el DNI, no tiene sentido mostrar una lista de un solo resultado. Si busca por nombre,
+puede haber homónimos — la lista es necesaria.
+**UX en el buscador:**
+- Input detecta si el valor es numérico de 8 dígitos → redirige directamente
+- Si es texto → muestra página de resultados `/buscar?q=nombre`
+- Filtros secundarios disponibles en `/buscar`: institución, cargo, rango de score IER
+
+---
+
+## DEC-019 · Representación visual del score IER: número + color + etiqueta
+**Fecha:** 2026-05-29
+**Estado:** ✅ Vigente
+**Decisión:** El score IER se muestra siempre como:
+1. **Número** (0–100, entero)
+2. **Color semafórico:**
+   - 0–39: verde (`--color-success`)
+   - 40–69: amarillo/naranja (`--color-warning`)
+   - 70–100: rojo (`--color-error`)
+3. **Etiqueta de texto:** "Riesgo Bajo" / "Riesgo Medio" / "Riesgo Alto"
+
+En la página de perfil, el IER global se desglosa en sus 3 sub-scores:
+corrupción, competencia y adecuación al cargo — cada uno con el mismo
+sistema numérico + color + etiqueta.
+**Descartado:** barras de progreso como representación principal
+(el número es más legible y comparable entre perfiles).
+
+---
+
+## DEC-020 · Página de perfil: layout interactivo con grafo + chat RAG lateral
+**Fecha:** 2026-05-29
+**Estado:** ✅ Vigente
+**Decisión:** La página de perfil (`/perfil/[dni]`) tiene un layout en dos
+columnas en desktop:
+
+**Columna principal (izquierda, ~65%):**
+- Header: nombre, cargo, institución, score IER global + desglose 3 dimensiones
+- Grafo de conexiones interactivo (vis.js Network):
+  - Nodos: funcionarios, empresas, contratos vinculados
+  - Nodos clickeables: click en un nodo carga ese perfil en el grafo
+  - Nodos arrastrables (drag & drop libre, modo Obsidian)
+  - El nodo central es el funcionario consultado
+  - Aristas etiquetadas con tipo de relación (contrato, sociedad, cargo compartido)
+- Secciones debajo del grafo: línea de tiempo de cargos, contratos OSCE,
+  alertas (Contraloría + Poder Judicial), fuentes
+
+**Columna lateral (derecha, ~35%):**
+- Panel de chat con IA (sticky, siempre visible al hacer scroll)
+- El chat usa RAG con embeddings sobre:
+  - Noticias scrapeadas diariamente (fuentes: El Comercio, La República,
+    Gestión, IDL-Reporteros, OjoPúblico, etc.)
+  - Documentos jurídicos y resoluciones vinculados al funcionario
+  - El propio perfil estructurado del funcionario
+- Ejemplos de preguntas válidas:
+  - "¿Cuántas leyes ha apoyado?"
+  - "¿Con qué personas tiene vínculos conocidos?"
+  - "¿Ha tenido sanciones de la Contraloría?"
+  - "¿Qué dicen las noticias recientes sobre esta persona?"
+- El chat NO inventa — responde solo con lo que tiene en el índice RAG,
+  citando las fuentes usadas en cada respuesta
+
+**Pipeline de noticias (worker diario):**
+- garendil-workers corre scraping de noticias cada 24h
+- Cada noticia pasa por embedding (modelo a definir en DEC-015)
+- Se indexa en la vector DB (Qdrant o Pinecone — DEC-015 pendiente)
+- El chat recupera por similitud semántica al contexto del funcionario consultado
+
+**Implementación por fases:**
+- Fase 1 MVP: grafo + secciones estáticas (sin chat)
+- Fase 2: chat RAG con noticias indexadas
+- Fase 3: grafo global (Obsidian-style, navegación entre todos los perfiles)
+
+**Dependencias técnicas:**
+- vis.js Network (ya decisión en DEC-008)
+- Vector DB: Qdrant self-hosted en Hetzner (pendiente DEC-015)
+- Modelo de embeddings: sentence-transformers o OpenAI text-embedding-3-small
+- API endpoint nuevo: `GET /api/perfil/{dni}/grafo` — devuelve nodos + aristas
+- API endpoint nuevo: `POST /api/chat/{dni}` — recibe pregunta, devuelve respuesta RAG con fuentes
