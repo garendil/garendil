@@ -3,21 +3,32 @@
 > **Índice de Exposición al Riesgo (IER)** — plataforma pública que cruza bases de datos del Estado peruano para generar un score de riesgo por funcionario público.
 
 [![Estado](https://img.shields.io/badge/estado-en%20desarrollo-yellow)](#)
-[![Stack](https://img.shields.io/badge/stack-Python%20%2B%20FastAPI%20%2B%20React-blue)](#)
+[![Stack](https://img.shields.io/badge/stack-Python%20%2B%20FastAPI%20%2B%20Next.js-blue)](#)
 [![Licencia](https://img.shields.io/badge/licencia-MIT-green)](#)
 
 ---
 
 ## ¿Qué es?
 
-Integritas (producto: **Mírantir**) es un sistema cívico de transparencia que:
+**Garendil** es un sistema cívico de transparencia que:
 
 1. Recibe el DNI de un funcionario público peruano
 2. Cruza automáticamente múltiples bases de datos del Estado
-3. Calcula un **IER [0.0–1.0]** usando lógica difusa
+3. Calcula un **IER [0.0–1.0]** usando un modelo híbrido de 3 capas (reglas explícitas → anomaly detection → ML supervisado)
 4. Muestra el desglose auditado de cada variable que contribuyó al score
 
 > ⚠️ El IER es un **indicador de riesgo**, no una acusación. Todas las fuentes son públicas y verificables.
+
+---
+
+## Repos del ecosistema
+
+| Repo | Propósito |
+|---|---|
+| [garendil/garendil](https://github.com/garendil/garendil) | Brain — decisiones, arquitectura, docs |
+| [garendil/garendil-api](https://github.com/garendil/garendil-api) | Backend FastAPI — scoring IER y endpoints |
+| [garendil/garendil-web](https://github.com/garendil/garendil-web) | Frontend Next.js — buscador público |
+| [garendil/garendil-infra](https://github.com/garendil/garendil-infra) | Infraestructura — Docker Compose, Hetzner VPS |
 
 ---
 
@@ -25,36 +36,46 @@ Integritas (producto: **Mírantir**) es un sistema cívico de transparencia que:
 
 | Fuente | Contenido |
 |---|---|
+| OSCE / SEACE | Licitaciones y contratos públicos (API REST OCDS) |
 | MEF — Transparencia Económica | Contratos, transferencias, planillas |
-| OSCE / SEACE | Licitaciones públicas |
-| SUNAT RUC | Vinculaciones empresariales |
-| JNE | Declaraciones de bienes y rentas |
 | Contraloría General | Auditorías, observaciones, sanciones |
 | INFObras | Ejecución de obras públicas |
-| Poder Judicial / INDECOPI | Procesos legales públicos |
+| Poder Judicial | Procesos legales públicos |
+| JNE | Declaraciones de bienes y rentas |
 
 ---
 
 ## Stack
 
 - **Backend:** Python 3.12 + FastAPI
-- **DB:** PostgreSQL 16
+- **DB:** PostgreSQL 16 + Supabase (auth + RLS)
+- **Grafo:** Neo4j
 - **ETL:** requests + BeautifulSoup + Playwright
-- **Scoring:** scikit-fuzzy
-- **Grafos:** NetworkX + D3.js
-- **Frontend:** React + Tailwind CSS
-- **IA narrativa:** Claude API (Anthropic)
+- **Scoring:** arquitectura híbrida — reglas explícitas + Isolation Forest + (futuro) scikit-learn
+- **Frontend:** Next.js 14 App Router + Tailwind CSS
+- **Grafo UI:** vis.js Network
+- **Pagos/Donativos:** Culqi
+- **Infra:** Hetzner VPS + Vercel (frontend)
 
 ---
 
 ## Setup rápido
 
 ```bash
-git clone https://github.com/androdstark/integritas
-cd integritas
-docker-compose up -d
-cd backend && pip install -r requirements.txt
+# Clonar los repos necesarios
+git clone https://github.com/garendil/garendil-api
+git clone https://github.com/garendil/garendil-web
+git clone https://github.com/garendil/garendil-infra
+
+# Levantar infraestructura local
+cd garendil-infra && docker-compose up -d
+
+# API
+cd ../garendil-api && pip install -r requirements.txt
 uvicorn app.main:app --reload
+
+# Web
+cd ../garendil-web && npm install && npm run dev
 ```
 
 ---
@@ -69,10 +90,11 @@ Proyecto basado únicamente en datos de acceso público conforme a:
 
 ## Estado
 
-Fase 0 — bootstrap del proyecto. Ver [CLAUDE.md](./CLAUDE.md) para roadmap completo.
+Ver [ROADMAP.md](./ROADMAP.md) para el estado actualizado de tareas.
+Ver [DECISIONS.md](./DECISIONS.md) para las decisiones de arquitectura vigentes.
 
 ---
 
 ## Inspiración
 
-Basado en el trabajo de Bruno César ([Cerebro Digital](https://github.com/brunoclz), Brasil 2026), adaptado al ecosistema de datos públicos del Perú.
+Arquitectura de anomaly detection basada en [Serenata de Amor](https://github.com/okfn-brasil) (okfn-brasil, Brasil).
