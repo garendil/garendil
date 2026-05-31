@@ -1,9 +1,7 @@
 # TROUBLESHOOTING.md — Bugs resueltos
 
-> **MOVIDO** — Fuente canónica: [`ARCHIVE/TROUBLESHOOTING.md`](ARCHIVE/TROUBLESHOOTING.md)
-> Este archivo se mantiene por compatibilidad. Editar en ARCHIVE/TROUBLESHOOTING.md.
-
 > Mantenido por Perplexity + usuario. Solo bugs confirmados resueltos.
 > Formato: ## BUG-001 · Descripción corta
+> Este archivo es referencia histórica — no fuente primaria.
 
 *Sin entradas aún — proyecto en fase de inicialización.*

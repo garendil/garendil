@@ -88,10 +88,30 @@ Proyecto basado únicamente en datos de acceso público conforme a:
 
 ---
 
-## Estado
+## Arquitectura documental
 
-Ver [ROADMAP.md](./ROADMAP.md) para el estado actualizado de tareas.
-Ver [DECISIONS.md](./DECISIONS.md) para las decisiones de arquitectura vigentes.
+Este repo usa una arquitectura **CURRENT + ARCHIVE** para optimizar el consumo de contexto de IAs:
+
+### CURRENT/ — fuente de verdad (~22 KB total)
+
+| Archivo | Contenido |
+|---|---|
+| [CURRENT/STATUS.md](CURRENT/STATUS.md) | Estado en tiempo real (escrito por Claude Code cada sesión) |
+| [CURRENT/DECISIONS.md](CURRENT/DECISIONS.md) | Decisiones técnicas vigentes (DEC-001 a DEC-016) |
+| [CURRENT/SERVERS.md](CURRENT/SERVERS.md) | Topología de infraestructura |
+| [CURRENT/ROADMAP.md](CURRENT/ROADMAP.md) | Estado de tareas por fase |
+| [CURRENT/ARCHITECTURE.md](CURRENT/ARCHITECTURE.md) | Stack, IER, módulos, fuentes de datos |
+| [CURRENT/AGENTS-PROTOCOL.md](CURRENT/AGENTS-PROTOCOL.md) | Protocolo de colaboración entre agentes |
+
+### ARCHIVE/ — referencia histórica
+
+| Archivo | Contenido |
+|---|---|
+| [ARCHIVE/SESSIONS.md](ARCHIVE/SESSIONS.md) | Historial de sesiones de trabajo |
+| [ARCHIVE/TROUBLESHOOTING.md](ARCHIVE/TROUBLESHOOTING.md) | Bugs resueltos confirmados |
+| [ARCHIVE/DECISIONS-HISTORY.md](ARCHIVE/DECISIONS-HISTORY.md) | Decisiones superseded o completadas |
+
+**Regla:** Las IAs deben leer CURRENT/ primero. ARCHIVE/ solo si se necesita contexto histórico explícito.
 
 ---
 

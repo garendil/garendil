@@ -20,12 +20,41 @@
 
 ---
 
-## Documentación del proyecto
+## Arquitectura documental
+
+### CURRENT/ — fuente de verdad operativa
+
+| Archivo | Contenido |
+|---|---|
+| `CURRENT/STATUS.md` | Estado en tiempo real (escrito por Claude Code) |
+| `CURRENT/DECISIONS.md` | Decisiones técnicas vigentes (DEC-001 a DEC-016) |
+| `CURRENT/SERVERS.md` | Topología de infraestructura (Hetzner, Supabase, Vercel) |
+| `CURRENT/ROADMAP.md` | Estado de tareas por fase |
+| `CURRENT/ARCHITECTURE.md` | Stack, IER, módulos, fuentes de datos |
+| `CURRENT/AGENTS-PROTOCOL.md` | Protocolo de colaboración entre agentes |
+
+### ARCHIVE/ — referencia histórica
+
+| Archivo | Contenido |
+|---|---|
+| `ARCHIVE/SESSIONS.md` | Historial de sesiones de trabajo |
+| `ARCHIVE/TROUBLESHOOTING.md` | Bugs resueltos confirmados |
+| `ARCHIVE/DECISIONS-HISTORY.md` | Decisiones superseded o completadas |
+
+### Otros
 
 | Archivo | Contenido |
 |---|---|
 | `CLAUDE.md` | Este archivo — contexto global para LLM |
 | `docs/14-frontend-ux.md` | Especificación completa del frontend UI/UX |
+
+### Reglas de la arquitectura documental
+
+1. **Leer en este orden:** `CURRENT/STATUS.md` → `CURRENT/SERVERS.md` → `CURRENT/DECISIONS.md`. Solo consultar `ARCHIVE/` si la información necesaria no existe en `CURRENT/`.
+2. **Nunca agregar información histórica a CURRENT/**. Toda información histórica va a `ARCHIVE/`.
+3. **Límite por archivo en CURRENT/: ~15 KB**. Si un archivo supera ese tamaño, proponer división o archivado del contenido histórico.
+4. **Las auditorías priorizan CURRENT/** sobre `ARCHIVE/`.
+5. **CURRENT/ es la fuente de verdad. ARCHIVE/ es referencia histórica.**
 
 ---
 
@@ -254,9 +283,9 @@ Cuando trabajes en este proyecto:
 - La especificación completa del frontend está en `docs/14-frontend-ux.md` — leer ese archivo antes de tocar cualquier código del frontend
 - El perfil psicológico inferido **siempre** debe incluir el disclaimer prominente definido en `docs/14-frontend-ux.md`
 - El score IER se muestra siempre en `font-mono` con color semántico
-- Antes de tocar cualquier archivo, leer STATUS.md y DECISIONS.md
-- Las decisiones de arquitectura están en DECISIONS.md (DEC-001 a
-  DEC-014) — no debatirlas, solo implementarlas
+- **Antes de tocar cualquier archivo:** leer `CURRENT/STATUS.md`, `CURRENT/SERVERS.md`, `CURRENT/DECISIONS.md`
+- Los archivos root (STATUS.md, DECISIONS.md, etc.) son redirects — leer siempre en `CURRENT/`
+- Las decisiones de arquitectura están en `CURRENT/DECISIONS.md` (DEC-001 a DEC-016) — no debatirlas, solo implementarlas
 - El repositorio canónico es github.com/garendil/garendil —
   nunca hacer push a rodhandev/garendil
 - Package manager: **pnpm** siempre — nunca `npm install` ni `yarn`

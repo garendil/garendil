@@ -1,5 +1,11 @@
 # DECISIONS.md — Decisiones técnicas y estratégicas
 
+> **REDIRECT** — Fuente canónica: [`CURRENT/DECISIONS.md`](CURRENT/DECISIONS.md)
+> Este archivo se mantiene por compatibilidad. Editar en CURRENT/DECISIONS.md.
+
+---
+<!-- CONTENIDO CANÓNICO EN CURRENT/DECISIONS.md — ver ese archivo -->
+
 > Mantenido por Perplexity + usuario. Claude Code solo lee este archivo.
 > Formato de ID: DEC-001, DEC-002, etc.
 

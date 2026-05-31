@@ -1,40 +1,30 @@
 # SESSIONS.md — Historial de sesiones
 
-> **MOVIDO** — Fuente canónica: [`ARCHIVE/SESSIONS.md`](ARCHIVE/SESSIONS.md)
-> Este archivo se mantiene por compatibilidad. Editar en ARCHIVE/SESSIONS.md.
-
 > Mantenido por Perplexity + usuario al cierre de cada sesión.
 > Entrada más reciente arriba.
+> Este archivo es referencia histórica — no fuente primaria.
 
 ---
 
-## Sesión 004 — 2026-05-29
+## Sesión 004 — 2026-05-31
 
-**Agente principal:** Claude Code + Perplexity + usuario
-**Tema:** Integración Supabase en garendil-api — DB + Auth middleware
+**Agente principal:** Claude Code + usuario
+**Tema:** Reorganización documental — arquitectura CURRENT/ + ARCHIVE/
 
 **Resuelto:**
-- `app/db/base.py`: migrado de `DATABASE_URL` local a `SUPABASE_DB_URL`; pool cambiado de `NullPool` a `QueuePool(pool_size=5, max_overflow=0, pool_recycle=300)`
-- `app/db/supabase_client.py`: creado singleton supabase-py para auth/storage (no queries de negocio — eso sigue siendo SQLAlchemy)
-- `app/middleware/auth.py`: JWT verify vía Supabase; inyecta `request.state.user_id`; no bloquea rutas públicas; solo activo si `SUPABASE_URL` presente en env
-- `app/main.py`: registra `AuthMiddleware` condicionalmente
-- `db/migrations/supabase_001_initial_schema.sql`: schema completo — 6 tablas (`funcionarios`, `empresas`, `contratos`, `procesos`, `conexiones`, `user_profiles`) + pg_trgm + triggers `updated_at` + RLS en `user_profiles` + trigger auto-create de user_profile en registro
-- `requirements.txt`: añadido `supabase>=2.3.0`, `asyncpg>=0.29.0`, `aiosqlite>=0.19.0`; eliminado `psycopg2-binary` (redundante con asyncpg) y redis duplicado
-- `.env.example`: variables completas Supabase + Redis + Neo4j + CORS
-- 27 tests passing sin modificación (usan SQLite in-memory con override de `get_db`)
-
-**Alertas activas (de STATUS.md):**
-- Pool: Transaction Pooler puerto 6543 + `QueuePool`. Si se migra a Session Pooler (5432) → cambiar a `NullPool`
-- `garendil-web` usa axios para API calls — rutas protegidas deben enviar `Authorization: Bearer <token>`
-- DEC-015 pendiente: Qdrant vs Pinecone
+- Creada estructura CURRENT/ con 6 archivos canónicos (~22KB total)
+- Creada estructura ARCHIVE/ con historial
+- CURRENT/ARCHITECTURE.md: nuevo archivo con stack, IER, módulos, fuentes
+- CURRENT/SERVERS.md: nuevo archivo con topología de infra (Hetzner, Supabase, Vercel)
+- CURRENT/DECISIONS.md, STATUS.md, ROADMAP.md, AGENTS-PROTOCOL.md: versiones canónicas
+- Archivos root actualizados como redirects a CURRENT/
+- CLAUDE.md (brain + workspace) actualizados con nuevas reglas de lectura
+- README.md actualizado con arquitectura documental
 
 **Pendiente para próxima sesión:**
-- Crear proyecto en Supabase Dashboard → obtener `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`, `SUPABASE_DB_URL`
-- Ejecutar `supabase_001_initial_schema.sql` en Supabase SQL Editor
-- Configurar secrets en Hetzner VPS
-- Deploy garendil-api en Hetzner VPS
 - Deploy garendil-web en Vercel
-- Implementar login/register funcionales en garendil-web
+- Setup Hetzner VPS para garendil-api
+- Crear proyecto Supabase y ejecutar migration 001
 
 ---
 
@@ -51,6 +41,7 @@
 - Corregido README.md: eliminadas referencias a Integritas, Mírantir, scikit-fuzzy, NetworkX, androdstark
 - Corregido ROADMAP.md: añadida Fase 0.5 con ítems completados, ajustados pendientes reales
 - Adaptadas instrucciones del Space de Garendil (inspiradas en Zhinova)
+- Implementada arquitectura Supabase en garendil-api (commit db4d473)
 
 **Pendiente para próxima sesión:**
 - Deploy garendil-web en Vercel

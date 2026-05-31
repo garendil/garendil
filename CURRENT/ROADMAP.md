@@ -1,9 +1,6 @@
 # ROADMAP.md — Estado de tareas
 
-> **REDIRECT** — Fuente canónica: [`CURRENT/ROADMAP.md`](CURRENT/ROADMAP.md)
-> Este archivo se mantiene por compatibilidad. Editar en CURRENT/ROADMAP.md.
-
-> Mantenido por Perplexity + usuario.
+> Mantenido por Perplexity + usuario. Fuente canónica: este archivo.
 
 ## Fase 0 — Brain y estructura ✅
 - [x] Definir stack completo
@@ -21,28 +18,20 @@
 - [x] Schema Supabase con profiles + RLS
 - [x] Schema Neo4j con constraints para Funcionario, Empresa, Contrato
 - [x] Auditoría de secrets — todos os.getenv() con fallbacks dev, .env excluido de git
-
-## Fase 0.7 — Integración Supabase en garendil-api ✅
-- [x] Migrar DB connection de PostgreSQL local a Supabase (`SUPABASE_DB_URL`)
-- [x] QueuePool configurado para Transaction Pooler (port 6543)
-- [x] Singleton supabase-py para auth/storage
-- [x] AuthMiddleware JWT — inyecta `user_id` en request.state, no bloquea rutas públicas
-- [x] Schema SQL `supabase_001_initial_schema.sql` — 6 tablas + pg_trgm + RLS + triggers
-- [x] 27 tests passing (SQLite in-memory, sin conflicto con cambios de pool)
+- [x] Reorganización documental CURRENT/ + ARCHIVE/ (2026-05-31)
 
 ## Fase 1 — MVP frontend + buscador
-- [ ] **Crear proyecto Supabase** → obtener `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`, `SUPABASE_DB_URL`
-- [ ] **Ejecutar `supabase_001_initial_schema.sql`** en Supabase SQL Editor
-- [ ] **Deploy garendil-api** en Hetzner VPS (configurar secrets + systemd)
-- [ ] **Deploy garendil-web** en Vercel
-- [ ] Implementar login/register funcionales en garendil-web (actualmente placeholders)
-- [ ] Conectar buscador DNI al backend real (actualmente endpoints retornan 501)
+- [ ] Diseño system: tokens, paleta, tipografía (basado en docs/14-frontend-ux.md)
+- [ ] Homepage con buscador por DNI — pulir y conectar a API real
 - [ ] Página de perfil /perfil/[dni] con SSR
 - [ ] Visualización de grafo (vis.js) en página de perfil
+- [ ] Auth con Supabase (registro + login)
 - [ ] Sección de donativos con Culqi
+- [ ] Deploy en Vercel apuntando a garendil/garendil-web
 
 ## Fase 2 — Backend + scoring conectado
-- [ ] Setup Hetzner VPS — instalar Neo4j, configurar PM2/systemd para garendil-api
+- [ ] Setup Hetzner VPS — instalar PostgreSQL, Neo4j, FastAPI con PM2/systemd
+- [ ] Conectar Supabase real (variables de entorno en producción)
 - [ ] Worker ETL: OSCE API (OCDS) con storage a PostgreSQL
 - [ ] Workers scraping: MEF, Contraloría, Poder Judicial
 - [ ] Endpoints API funcionando (actualmente retornan 501)

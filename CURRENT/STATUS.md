@@ -1,14 +1,7 @@
 # STATUS.md — Estado en tiempo real
 
-> **REDIRECT** — Fuente canónica: [`CURRENT/STATUS.md`](CURRENT/STATUS.md)
-> Este archivo se mantiene por compatibilidad. Claude Code escribe en CURRENT/STATUS.md.
-
----
-<!-- CONTENIDO CANÓNICO EN CURRENT/STATUS.md — ver ese archivo -->
-
-> Este archivo lo escribe Claude Code al inicio/fin de cada sesión.
-> Se sobreescribe completo. No tiene historial acumulado.
-> Perplexity lo lee al inicio de cada sesión pero nunca lo modifica.
+> Escrito por Claude Code al inicio/fin de cada sesión. Se sobreescribe completo. Sin historial acumulado.
+> Fuente canónica: este archivo. El del root es redirect.
 
 ---
 
@@ -55,7 +48,7 @@
 - scraper/osce_worker.py — fetch funciona, storage pendiente
 
 ### garendil/garendil (brain) ✅
-- Solo docs. apps/, infra/, workers/ eliminados.
+- Solo docs. Nueva arquitectura CURRENT/ + ARCHIVE/ implementada (2026-05-31).
 
 ---
 
@@ -98,9 +91,9 @@
 
 ---
 
-## Alertas para Perplexity
+## Alertas
 
 1. **`__pycache__/` ya excluido** — .gitignore de garendil-api fue actualizado externamente con `__pycache__/`. Alerta resuelta.
-2. **Decisión de pool de conexiones:** se usa Transaction Pooler (puerto 6543) con `pool_size=5`. Si se migra a Session Pooler (puerto 5432), cambiar a `NullPool` (Supabase recomienda NullPool solo con Session Pooler en serverless).
+2. **Pool de conexiones:** Transaction Pooler (puerto 6543) con `pool_size=5`. Si se migra a Session Pooler (puerto 5432), cambiar a `NullPool`.
 3. **DEC-015 pendiente:** Qdrant vs Pinecone para RAG. No bloquea MVP.
-4. **garendil-web usa axios** para llamadas API — cuando se conecte al backend real, las rutas protegidas deben enviar `Authorization: Bearer <token>`.
+4. **garendil-web usa axios** — rutas protegidas deben enviar `Authorization: Bearer <token>`.

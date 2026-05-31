@@ -1,5 +1,8 @@
 # AGENTS-PROTOCOL.md — Protocolo de colaboración entre agentes
 
+> **REDIRECT** — Fuente canónica: [`CURRENT/AGENTS-PROTOCOL.md`](CURRENT/AGENTS-PROTOCOL.md)
+> Este archivo se mantiene por compatibilidad. Editar en CURRENT/AGENTS-PROTOCOL.md.
+
 > Mantenido por Perplexity + usuario cuando el flujo de trabajo cambia.
 > Claude Code solo lee este archivo.
 
