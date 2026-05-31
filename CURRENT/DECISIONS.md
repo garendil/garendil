@@ -119,3 +119,50 @@ Con citas a estudios académicos (APA).
 - Reemplazar `DATABASE_URL` local por connection string de Supabase
 - `supabase-py` solo para auth y storage; SQLAlchemy sigue siendo ORM para queries
 - RLS habilitado en tablas de usuarios según migration 001
+
+---
+
+## DEC-017 · Supabase connection pooler: Transaction Pooler por defecto
+**Fecha:** 2026-05-29 | **Estado:** ✅ Vigente
+**Decisión:** Transaction Pooler (puerto 6543). `app/db/base.py`: `QueuePool(pool_size=5, max_overflow=0)`.
+**Migrar a Session Pooler (puerto 5432) si:** ORM requiere estado persistente de conexión; backend serverless; errores `prepared statement already exists` con asyncpg.
+**Cambio requerido al migrar:**
+```python
+from sqlalchemy.pool import NullPool
+engine = create_async_engine(SUPABASE_DB_URL, poolclass=NullPool)
+# SUPABASE_DB_URL → puerto 5432
+```
+
+---
+
+## DEC-018 · Búsqueda principal: DNI → redirect directo al perfil
+**Fecha:** 2026-05-29 | **Estado:** ✅ Vigente
+**Decisión:** DNI exacto (8 dígitos) → redirect directo a `/perfil/[dni]`. Búsqueda por nombre → lista de resultados `/buscar?q=nombre`.
+**UX:** Input detecta si valor es numérico 8 dígitos → redirect; si texto → lista con filtros (institución, cargo, rango IER).
+
+---
+
+## DEC-019 · Representación visual del score IER: número + color + etiqueta
+**Fecha:** 2026-05-29 | **Estado:** ✅ Vigente
+**Decisión:** IER siempre: número (0–100) + color semafórico + etiqueta.
+- 0–39: verde (`--color-success`) — "Riesgo Bajo"
+- 40–69: naranja (`--color-warning`) — "Riesgo Medio"
+- 70–100: rojo (`--color-error`) — "Riesgo Alto"
+En perfil: IER global desglosado en 3 sub-scores (corrupción, competencia, adecuación al cargo).
+**Descartado:** barras de progreso como representación principal.
+
+---
+
+## DEC-020 · Página de perfil: layout 2 columnas — grafo + chat RAG lateral
+**Fecha:** 2026-05-29 | **Estado:** ✅ Vigente
+**Decisión:** `/perfil/[dni]` — 2 columnas en desktop:
+
+**Columna principal (~65%):** header IER, grafo vis.js Network interactivo (nodos clickeables + arrastrables), línea de tiempo de cargos, contratos OSCE, alertas (Contraloría + Poder Judicial), fuentes.
+
+**Columna lateral (~35%):** chat IA sticky con RAG sobre noticias diarias scrapeadas + documentos jurídicos + perfil estructurado. Cita fuentes. No inventa.
+
+**Pipeline noticias:** garendil-workers scraping 24h → embeddings → Qdrant/Pinecone (DEC-015) → retrieval semántico.
+
+**Fases:** Fase 1 MVP: grafo + secciones estáticas (sin chat). Fase 2: chat RAG. Fase 3: grafo global.
+
+**APIs nuevas:** `GET /api/perfil/{dni}/grafo`, `POST /api/chat/{dni}`.

@@ -6,10 +6,32 @@
 
 ---
 
-## Sesión 004 — 2026-05-31
+## Sesión 005 — 2026-05-31
 
 **Agente principal:** Claude Code + usuario
 **Tema:** Reorganización documental — arquitectura CURRENT/ + ARCHIVE/
+
+**Resuelto:**
+- Creada estructura CURRENT/ con 6 archivos canónicos (~22KB total)
+- Creada estructura ARCHIVE/ con historial
+- CURRENT/ARCHITECTURE.md: nuevo archivo con stack, IER, módulos, fuentes
+- CURRENT/SERVERS.md: nuevo archivo con topología de infra (Hetzner, Supabase, Vercel)
+- CURRENT/DECISIONS.md sincronizado con DEC-001 a DEC-020
+- Archivos root actualizados como redirects a CURRENT/
+- CLAUDE.md (brain + workspace) actualizados con reglas de lectura y 5 reglas documentales
+- README.md actualizado con tabla de arquitectura documental
+
+**Pendiente para próxima sesión:**
+- Deploy garendil-web en Vercel
+- Setup Hetzner VPS para garendil-api
+- Crear proyecto Supabase y ejecutar migration 001
+
+---
+
+## Sesión 004 — 2026-05-29
+
+**Agente principal:** Claude Code + Perplexity + usuario
+**Tema:** Integración Supabase en garendil-api — DB + Auth middleware
 
 **Resuelto:**
 - Creada estructura CURRENT/ con 6 archivos canónicos (~22KB total)
