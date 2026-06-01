@@ -6,6 +6,54 @@
 
 ---
 
+## Sesión 006 — 2026-05-31
+
+**Agente principal:** Claude Code + Perplexity + usuario
+**Tema:** Scripts de infraestructura y configuración de deploy para Fase 1
+
+**Resuelto:**
+
+garendil-infra:
+- `docker-compose.prod.yml` — API + Neo4j + Redis en Docker; API bound a 127.0.0.1:8000; sin postgres (Supabase externo)
+- `nginx/nginx.prod.conf` — Reverse proxy HTTPS + HSTS + certbot path; placeholder DOMAIN
+- `scripts/setup-hetzner.sh` — Provisioning inicial VPS: instala Docker, nginx, certbot, ufw; clona repos; obtiene SSL
+- `scripts/deploy.sh` — Redeploy: git pull → docker build → up → health check
+- `env.prod.example` — Template de variables con notas de DEC-017 (Transaction Pooler)
+
+garendil-web:
+- `vercel.json` creado — framework nextjs, pnpm build
+- `.env.example` bug fix: `API_URL` → `NEXT_PUBLIC_API_URL` (el código lo requería con prefijo)
+
+**Variables pendientes (el usuario las provee):**
+
+Hetzner VPS — `/opt/garendil/.env`:
+- SUPABASE_URL
+- SUPABASE_SERVICE_KEY
+- SUPABASE_DB_URL (Transaction Pooler, puerto 6543 — DEC-017)
+- NEO4J_PASSWORD
+- CORS_ORIGINS=https://garendil-web.vercel.app
+
+Vercel dashboard — Settings → Environment Variables:
+- NEXT_PUBLIC_SUPABASE_URL
+- NEXT_PUBLIC_SUPABASE_ANON_KEY
+- NEXT_PUBLIC_API_URL=https://api.TU_DOMINIO
+
+**Flujo de deploy cuando se tenga el VPS:**
+1. `ssh root@<VPS_IP>`
+2. `curl -fsSL .../setup-hetzner.sh | bash -s api.TU_DOMINIO tu@email.com`
+3. Completar `/opt/garendil/.env` con secrets reales
+4. `/opt/garendil/garendil-infra/scripts/deploy.sh`
+
+**Pendiente para próxima sesión:**
+- Crear proyecto Supabase (manual) → obtener las 3 variables
+- Ejecutar `supabase_001_initial_schema.sql` en Supabase SQL Editor
+- Provisionar Hetzner VPS y ejecutar `setup-hetzner.sh`
+- Deploy garendil-web en Vercel con variables de entorno
+- Smoke test end-to-end (registro → login → request autenticada)
+- Implementar login/register funcionales en garendil-web (actualmente placeholders)
+
+---
+
 ## Sesión 005 — 2026-05-31
 
 **Agente principal:** Claude Code + usuario
