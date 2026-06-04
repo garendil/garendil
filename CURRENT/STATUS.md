@@ -6,94 +6,116 @@
 ---
 
 ## Sesión actual
-- **Fecha:** 2026-05-29
+- **Fecha:** 2026-06-04
 - **Agente:** Claude Code
-- **Estado:** Arquitectura Supabase implementada en garendil-api
+- **Estado:** Auditoría post-pausa completada (6 días sin actividad desde 2026-05-29)
 
 ---
 
-## Qué se hizo en esta sesión
+## AUDITORÍA GARENDIL — 2026-06-04
 
-### garendil-api — Supabase DB architecture (commit `db4d473`)
+### garendil-api ✅
 
-| Archivo | Acción | Descripción |
-|---------|--------|-------------|
-| `app/db/base.py` | Modificado | `DATABASE_URL` → `SUPABASE_DB_URL`; `NullPool` → `QueuePool(pool_size=5, max_overflow=0)` |
-| `app/db/supabase_client.py` | Creado | Singleton supabase-py para auth/storage (no queries de negocio) |
-| `app/middleware/__init__.py` | Creado | Export `AuthMiddleware` |
-| `app/middleware/auth.py` | Creado | JWT verify vía Supabase; inyecta `request.state.user_id`; solo activo si `SUPABASE_URL` presente |
-| `app/main.py` | Modificado | Registra `AuthMiddleware` condicionalmente |
-| `db/migrations/supabase_001_initial_schema.sql` | Creado | Schema completo para Supabase SQL Editor |
-| `requirements.txt` | Modificado | + `supabase>=2.3.0`, `asyncpg>=0.29.0`, `aiosqlite>=0.19.0`; - `psycopg2-binary` |
-| `.env.example` | Actualizado | Variables Supabase + Redis + Neo4j + CORS |
+- **Estado general:** ✅ Arquitectura sólida, sin bugs críticos
+- **Tests:** Estructura correcta (7 archivos), `pytest` no instalado en entorno local — no ejecutable
+- **Endpoints operativos (20+):**
+  - `GET /health`, `GET /health/full`
+  - `GET /api/search`, `GET /api/perfil/{dni}`, `GET /api/stats`
+  - `GET /api/perfil/{dni}/scores`, `GET /perfil/{dni}/scores-cached`
+  - `GET /dashboard/resumen`, `GET /dashboard/riesgo-top`, `GET /dashboard/tendencias`, `GET /dashboard/alertas`
+  - `POST /dashboard/reportar-riesgo`
+  - `POST /admin/sync-osce`, `POST /admin/train-layer2`, `POST /admin/train-layer3`, `POST /admin/sync-neo4j`
+  - `GET /admin/layer3-status`
+  - `POST /batch/score-funcionarios` (max 1000)
+  - `GET /metrics` (Prometheus)
+- **Endpoints 501 pendientes:** Ninguno — no hay 501s en el código
+- **Problemas encontrados:**
+  - 🟡 `app/monitoring/alerting.py` — TODO Slack webhook (no bloquea)
+  - 🟡 `app/api/routes.py:426` — `"model_version": "v3-placeholder"` (Layer3 sin entrenar, correcto)
+  - 🟡 Tests requieren `pytest` en entorno para ejecutar — código OK, entorno no
 
----
+### garendil-web ✅
 
-## Estado de los repos
+- **Estado general:** ✅ Estructura correcta, auth pages intencionales como placeholder
+- **Páginas funcionales:**
+  - `/` — Homepage (hero, stats, buscador DNI, perfiles recientes)
+  - `/perfil/[dni]` — Perfil SSR completo (IER scores, grafo vis.js, contratos, export .md)
+  - `/admin` — Dashboard admin
+  - `/admin/status` — Status page
+  - `/grafo` — Visualización grafo global
+  - `/metodologia` — Explicación metodología IER
+- **Páginas placeholder (Fase 1):**
+  - `/login` — solo `<h1>`, sin implementación
+  - `/register` — solo `<h1>`, sin implementación
+- **Problemas encontrados:**
+  - 🟡 `garendil-brain/README.md` usa `npm install` en vez de `pnpm` — violación DEC
 
-### garendil/garendil-api ✅
-- FastAPI v0.7 + arquitectura Supabase implementada
-- **Pendiente:** configurar `SUPABASE_DB_URL` real y ejecutar `supabase_001_initial_schema.sql`
-- Tests: 27/27 passing (usan SQLite in-memory, no afectados por el cambio de URL)
-- Middleware auth: desactivado en tests (no hay `SUPABASE_URL` en env de test)
+### garendil-infra ✅
 
-### garendil/garendil-web ✅
-- Next.js v0.7 + supabase libs + middleware + auth placeholders
-- **Pendiente:** implementar login/register funcionales
+- **Estado general:** ✅ Listo para producción
+- **Scripts listos:**
+  - `setup-hetzner.sh` — provisioning inicial completo (Docker, nginx, certbot, UFW)
+  - `deploy.sh` — redeploy con healthcheck
+  - Valida que `.env` no tenga placeholders antes de deployar
+- **docker-compose.prod.yml:** garendil-api + neo4j + redis, red interna `garendil-internal`, healthchecks
+- **nginx/nginx.prod.conf:** HTTP→HTTPS, SSL Let's Encrypt, security headers, proxy a 127.0.0.1:8000
+- **env.prod.example:** completo, cubre todas las variables del código
+- **Problemas encontrados:**
+  - 🟡 `docker-compose.prod.yml` — `NEO4J_PASSWORD:-changeme` (placeholder, se debe cambiar en prod — correcto, documentado)
 
-### garendil/garendil-infra ✅
-- docker-compose + k8s + neo4j schema + supabase migration
+### garendil-workers ⚠️
 
-### garendil/garendil-workers ✅
-- scraper/osce_worker.py — fetch funciona, storage pendiente
+- **Estado general:** ⚠️ Implementación parcial (Fase 2)
+- **Workers funcionales:**
+  - `scraper/osce_worker.py` — fetch de API OCDS OSCE con paginación y retry ✅
+- **Workers pendientes:**
+  - `osce_worker.py` — storage layer (parse OCDS → Supabase + Neo4j) 🟡
+  - MEF, Contraloría, Poder Judicial — no existen aún (Fase 2)
+- **requirements.txt:** propio, completo (httpx, scrapy, supabase, neo4j, celery, redis)
+- **Problemas encontrados:**
+  - 🟡 Storage pendiente en osce_worker (line 34) — bloqueante para datos reales
 
-### garendil/garendil (brain) ✅
-- Solo docs. Nueva arquitectura CURRENT/ + ARCHIVE/ implementada (2026-05-31).
+### garendil (brain) ✅
 
----
-
-## Conflictos encontrados (resueltos)
-
-1. **`DATABASE_URL` en tests** — `tests/test_api.py` usa `TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"` como constante local, no importa la variable de `base.py`. Sin conflicto.
-2. **NullPool → QueuePool** — tests crean su propio engine con override completo. Sin conflicto.
-3. **AuthMiddleware en tests** — middleware solo se registra si `SUPABASE_URL` está en env. Tests no lo setean. Sin conflicto.
-4. **`aiosqlite` faltante** — estaba implícito pero no en requirements. Agregado.
-
----
-
-## Schema Supabase (`supabase_001_initial_schema.sql`)
-
-**6 tablas creadas:**
-- `funcionarios` — con GIN index pg_trgm + unaccent en nombre, index score_ier DESC
-- `empresas` — GIN trgm en razon_social
-- `contratos` — FK a funcionarios + empresas, flags Layer1
-- `procesos` — FK a funcionarios
-- `conexiones` — FK origen + destino a funcionarios (CASCADE)
-- `user_profiles` — UUID PK, FK a auth.users, plan free/pro, contadores consultas
-
-**Features:**
-- Trigger `updated_at` automático en todas las tablas
-- RLS en `user_profiles` (usuarios ven solo su fila)
-- Service role policy para backend
-- Trigger `on_auth_user_created`: auto-crea user_profile al registrarse
-
----
-
-## Pendiente inmediato
-
-- [ ] **Crear proyecto Supabase** y obtener `SUPABASE_DB_URL` real
-- [ ] **Ejecutar `supabase_001_initial_schema.sql`** en Supabase SQL Editor
-- [ ] **Configurar secrets** en Hetzner VPS (SUPABASE_URL, SUPABASE_SERVICE_KEY, SUPABASE_DB_URL)
-- [ ] **Deploy garendil-api** en Hetzner VPS
-- [ ] **Deploy garendil-web** en Vercel
-- [ ] **Implementar login/register** en garendil-web (app/(auth)/login y register son placeholders)
-- [ ] **Conectar buscador DNI** al backend real
+- **Estado general:** ✅ Docs sincronizados, sin contradicciones
+- **CURRENT/ completo:** STATUS.md ✅, DECISIONS.md ✅, ARCHITECTURE.md ✅, SERVERS.md ✅, ROADMAP.md ✅, AGENTS-PROTOCOL.md ✅
+- **Archivos root:** son redirects correctos
+- **Inconsistencias documentación vs. código:**
+  - `README.md` menciona `npm install` → debe ser `pnpm install` (menor)
+  - Estado `DEC-017` (NullPool si Session Pooler) — código aún usa Transaction Pooler (correcto, no hay cambio pendiente)
 
 ---
 
-## Alertas
+## Próximos pasos recomendados (prioridad MVP)
 
-1. **`__pycache__/` ya excluido** — .gitignore de garendil-api fue actualizado externamente con `__pycache__/`. Alerta resuelta.
-2. **Pool de conexiones:** Transaction Pooler (puerto 6543) con `pool_size=5`. Si se migra a Session Pooler (puerto 5432), cambiar a `NullPool`.
-3. **DEC-015 pendiente:** Qdrant vs Pinecone para RAG. No bloquea MVP.
+1. **[BLOQUEANTE]** Crear proyecto Supabase — obtener `SUPABASE_DB_URL`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_KEY` reales
+2. **[BLOQUEANTE]** Ejecutar `supabase_001_initial_schema.sql` en Supabase SQL Editor
+3. **[BLOQUEANTE]** Configurar `/opt/garendil/.env` en Hetzner VPS con secrets reales
+4. **[BLOQUEANTE]** Ejecutar `setup-hetzner.sh` y `deploy.sh` en VPS — deploy garendil-api
+5. **[BLOQUEANTE]** Conectar garendil-web en Vercel (repo garendil/garendil-web)
+6. Implementar login/register en garendil-web (`app/(auth)/login` y `register`)
+7. Conectar buscador DNI del homepage al backend real
+8. Implementar storage layer en `osce_worker.py` (OSCE → Supabase + Neo4j)
+9. Fix menor: `garendil-brain/README.md` → cambiar `npm install` a `pnpm install`
+
+---
+
+## Estado de repos (commits)
+
+| Repo | Último commit | Estado |
+|------|--------------|--------|
+| garendil/garendil-api | `db4d473` (Supabase DB arch) | ✅ En orden |
+| garendil/garendil-web | `6862b39` (vercel.json + SPA) | ✅ En orden |
+| garendil/garendil-infra | `c5f9d4f` (prod deployment) | ✅ En orden |
+| garendil/garendil-workers | `2f3ce94` (OSCE worker sync) | ✅ En orden |
+| garendil/garendil (brain) | `b373096` (CURRENT/ sync) | ✅ En orden |
+
+---
+
+## Alertas activas
+
+1. **Pool conexiones:** Transaction Pooler (6543) con `pool_size=5`. Si se migra a Session Pooler (5432), cambiar a `NullPool` (DEC-017).
+2. **Layer3 desactivado:** RandomForest necesita ≥50 muestras etiquetadas de Poder Judicial (Fase 2).
+3. **DEC-015 pendiente:** Qdrant vs Pinecone para RAG — no bloquea MVP.
 4. **garendil-web usa axios** — rutas protegidas deben enviar `Authorization: Bearer <token>`.
+5. **Repo obsoleto:** `/home/rodri/garendil-workspace/garendil/` (monorepo v0.7) sigue presente — no dañino pero redundante.
