@@ -6,6 +6,40 @@
 
 ---
 
+## Sesión 007 — 2026-06-04
+
+**Agente principal:** Claude Code + Perplexity + usuario
+**Tema:** Auditoría completa del proyecto post-pausa (commit `abacd45`)
+
+**Resuelto:**
+
+| Repo | Estado | Detalle |
+|------|--------|---------|
+| garendil-api | ✅ | 20+ endpoints operativos, sin 501s, arquitectura Supabase en orden |
+| garendil-web | ✅ | 6 páginas funcionales incluyendo perfil SSR con IER + vis.js; login/register son placeholders intencionales (Fase 1) |
+| garendil-infra | ✅ | setup-hetzner.sh, deploy.sh, nginx SSL, docker-compose listos para producción |
+| garendil-workers | ⚠️ | OSCE fetch funciona; storage layer (→ Supabase + Neo4j) pendiente en línea 34 |
+| garendil-brain | ✅ | CURRENT/ completo y sincronizado; bug menor: README.md dice `npm install` en vez de `pnpm` |
+
+**Sin bugs críticos en código.** Todo el bloqueo es de infraestructura/secrets.
+
+**4 bloqueos para deploy MVP (en orden):**
+1. Crear proyecto Supabase → obtener secrets reales
+2. Ejecutar `supabase_001_initial_schema.sql` en Supabase SQL Editor
+3. Configurar `.env` en Hetzner VPS
+4. Correr `setup-hetzner.sh` + `deploy.sh`
+
+**Pendiente para próxima sesión:**
+- Crear proyecto Supabase (manual) → obtener SUPABASE_URL, SUPABASE_SERVICE_KEY, SUPABASE_DB_URL, SUPABASE_ANON_KEY
+- Ejecutar `supabase_001_initial_schema.sql` en Supabase SQL Editor
+- Provisionar Hetzner VPS y ejecutar `setup-hetzner.sh`
+- Deploy garendil-web en Vercel con variables de entorno
+- Smoke test end-to-end (registro → login → request autenticada)
+- Fix menor: README.md `npm install` → `pnpm install`
+- Implementar storage layer en garendil-workers (línea 34)
+
+---
+
 ## Sesión 006 — 2026-05-31
 
 **Agente principal:** Claude Code + Perplexity + usuario
@@ -89,7 +123,7 @@ Vercel dashboard — Settings → Environment Variables:
 - CURRENT/DECISIONS.md, STATUS.md, ROADMAP.md, AGENTS-PROTOCOL.md: versiones canónicas
 - Archivos root actualizados como redirects a CURRENT/
 - CLAUDE.md (brain + workspace) actualizados con nuevas reglas de lectura
-- README.md actualizado con arquitectura documental
+- README.md actualizado con tabla de arquitectura documental
 
 **Pendiente para próxima sesión:**
 - Deploy garendil-web en Vercel
