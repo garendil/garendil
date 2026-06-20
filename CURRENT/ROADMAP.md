@@ -53,4 +53,4 @@
 - [ ] Módulo 11 · Competencia Dual
 - [ ] Módulo 13 · LexGraph (Neo4j)
 - [ ] Capa 3 IER (ML supervisado) cuando haya datos etiquetados
-- [ ] RAG con embeddings — Qdrant (self-hosted) o Pinecone (pendiente DEC-015)
+- [ ] RAG con embeddings — Qdrant (self-hosted) o Pinecone (pendiente [DEC-015](DECISIONS.md#dec-015))
