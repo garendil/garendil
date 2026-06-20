@@ -11,9 +11,9 @@
 |---|---|
 | Backend | Python 3.12 · FastAPI |
 | ORM | SQLAlchemy (queries de negocio) |
-| DB relacional | Supabase / PostgreSQL (DEC-016) |
+| DB relacional | Supabase / PostgreSQL ([DEC-016](DECISIONS.md#dec-016)) |
 | DB grafo | Neo4j en Hetzner VPS |
-| Auth | Supabase Auth + JWT (DEC-006) |
+| Auth | Supabase Auth + JWT ([DEC-006](DECISIONS.md#dec-006)) |
 | Frontend | Next.js 14 App Router + Tailwind CSS |
 | Grafo UI | vis.js Network (preferido) o D3.js |
 | Scraping | BeautifulSoup / Scrapy |
@@ -40,7 +40,7 @@ Score numérico **0 a 100** por funcionario. Cruza 6 dimensiones:
 
 **El IER es un score de riesgo, no de culpabilidad.** Cada punto tiene fuente verificable.
 
-### Modelo de scoring — 3 capas (DEC-003)
+### Modelo de scoring — 3 capas ([DEC-003](DECISIONS.md#dec-003))
 
 1. **Reglas explícitas** — umbrales deterministas (auditable desde día 1)
 2. **Anomaly detection** — Isolation Forest (sin etiquetas)
