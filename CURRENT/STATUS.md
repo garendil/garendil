@@ -48,7 +48,7 @@
   - `/login` — solo `<h1>`, sin implementación
   - `/register` — solo `<h1>`, sin implementación
 - **Problemas encontrados:**
-  - 🟡 `garendil-brain/README.md` usa `npm install` en vez de `pnpm` — violación DEC
+  - 🟡 [README.md](../README.md) usa `npm install` en vez de `pnpm` — violación DEC
 
 ### garendil-infra ✅
 
@@ -78,11 +78,11 @@
 ### garendil (brain) ✅
 
 - **Estado general:** ✅ Docs sincronizados, sin contradicciones
-- **CURRENT/ completo:** STATUS.md ✅, DECISIONS.md ✅, ARCHITECTURE.md ✅, SERVERS.md ✅, ROADMAP.md ✅, AGENTS-PROTOCOL.md ✅
+- **CURRENT/ completo:** STATUS.md ✅, [DECISIONS.md](DECISIONS.md) ✅, [ARCHITECTURE.md](ARCHITECTURE.md) ✅, [SERVERS.md](SERVERS.md) ✅, [ROADMAP.md](ROADMAP.md) ✅, [AGENTS-PROTOCOL.md](AGENTS-PROTOCOL.md) ✅
 - **Archivos root:** son redirects correctos
 - **Inconsistencias documentación vs. código:**
-  - `README.md` menciona `npm install` → debe ser `pnpm install` (menor)
-  - Estado `DEC-017` (NullPool si Session Pooler) — código aún usa Transaction Pooler (correcto, no hay cambio pendiente)
+  - [README.md](../README.md) menciona `npm install` → debe ser `pnpm install` (menor)
+  - Estado [DEC-017](DECISIONS.md#dec-017) (NullPool si Session Pooler) — código aún usa Transaction Pooler (correcto, no hay cambio pendiente)
 
 ---
 
@@ -96,7 +96,7 @@
 6. Implementar login/register en garendil-web (`app/(auth)/login` y `register`)
 7. Conectar buscador DNI del homepage al backend real
 8. Implementar storage layer en `osce_worker.py` (OSCE → Supabase + Neo4j)
-9. Fix menor: `garendil-brain/README.md` → cambiar `npm install` a `pnpm install`
+9. Fix menor: [README.md](../README.md) → cambiar `npm install` a `pnpm install`
 
 ---
 
@@ -114,8 +114,8 @@
 
 ## Alertas activas
 
-1. **Pool conexiones:** Transaction Pooler (6543) con `pool_size=5`. Si se migra a Session Pooler (5432), cambiar a `NullPool` (DEC-017).
+1. **Pool conexiones:** Transaction Pooler (6543) con `pool_size=5`. Si se migra a Session Pooler (5432), cambiar a `NullPool` ([DEC-017](DECISIONS.md#dec-017)).
 2. **Layer3 desactivado:** RandomForest necesita ≥50 muestras etiquetadas de Poder Judicial (Fase 2).
-3. **DEC-015 pendiente:** Qdrant vs Pinecone para RAG — no bloquea MVP.
+3. **[DEC-015](DECISIONS.md#dec-015) pendiente:** Qdrant vs Pinecone para RAG — no bloquea MVP.
 4. **garendil-web usa axios** — rutas protegidas deben enviar `Authorization: Bearer <token>`.
 5. **Repo obsoleto:** `/home/rodri/garendil-workspace/garendil/` (monorepo v0.7) sigue presente — no dañino pero redundante.
