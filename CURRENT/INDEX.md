@@ -19,10 +19,11 @@ timestamp: 2026-06-30
 | [ARCHITECTURE.md](ARCHITECTURE.md) | architecture |
 | [ROADMAP.md](ROADMAP.md) | roadmap |
 
-### `runbook` — Protocolos y procedimientos (1)
+### `runbook` — Protocolos y procedimientos (2)
 | Archivo | Tags |
 |---|---|
 | [AGENTS-PROTOCOL.md](AGENTS-PROTOCOL.md) | protocol |
+| [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | troubleshooting, errors, debugging, runbook |
 
 ### `reference` — Configuración y registros (5)
 | Archivo | Tags |
@@ -41,9 +42,9 @@ timestamp: 2026-06-30
 ---
 
 ## Estadísticas
-- **Total archivos**: 9
+- **Total archivos**: 10
 - **Tipo `concept`**: 2
-- **Tipo `runbook`**: 1
+- **Tipo `runbook`**: 2
 - **Tipo `reference`**: 5
 - **Tipo `log`**: 1
 

@@ -75,6 +75,17 @@ refs:                 # apunta a otros docs del brain (DEC-004)
 
 ---
 
+### Límites y mantenimiento de archivos CURRENT/
+- Tamaño máximo por archivo: ~15 KB — si supera, mover historial a ARCHIVE/
+- División CURRENT/ARCHIVE: CURRENT/ solo tiene docs activos y vigentes
+- ARCHIVE/ recibe: sesiones antiguas, DECs superadas, auditorías pasadas
+
+### Sugerencias proactivas al cerrar sesión
+Al final de cada sesión, evaluar y reportar:
+- ¿Hay decisión tomada hoy que deba registrarse como DEC-XXX?
+- ¿Algún archivo CURRENT/ está por superar ~15 KB?
+- ¿STATUS.md refleja el estado real al cierre?
+
 ## Rutina de cierre de sesión — OBLIGATORIO
 
 1. Actualizar STATUS.md (estado actual, commits recientes, alertas, próximos pasos)
