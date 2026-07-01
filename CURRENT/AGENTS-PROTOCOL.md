@@ -1,3 +1,11 @@
+---
+type: runbook
+title: "Agents Protocol"
+description: "Mantenido por Perplexity + usuario cuando el flujo cambia. Claude Code solo lee."
+tags: [protocol]
+timestamp: 2026-06-20
+---
+
 # AGENTS-PROTOCOL.md — Protocolo de colaboración entre agentes
 
 > Mantenido por Perplexity + usuario cuando el flujo cambia. Claude Code solo lee.

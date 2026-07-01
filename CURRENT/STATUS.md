@@ -1,3 +1,12 @@
+---
+type: log
+title: "Status"
+description: "Escrito por Claude Code al inicio/fin de cada sesión. Se sobreescribe completo. Sin historial acumul"
+tags: [documentation]
+timestamp: 2026-06-20
+volatile: true
+---
+
 # STATUS.md — Estado en tiempo real
 
 > Escrito por Claude Code al inicio/fin de cada sesión. Se sobreescribe completo. Sin historial acumulado.

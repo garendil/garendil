@@ -1,3 +1,11 @@
+---
+type: concept
+title: "Roadmap"
+description: "Mantenido por Perplexity + usuario. Fuente canónica: este archivo."
+tags: [roadmap]
+timestamp: 2026-06-20
+---
+
 # ROADMAP.md — Estado de tareas
 
 > Mantenido por Perplexity + usuario. Fuente canónica: este archivo.

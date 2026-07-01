@@ -1,3 +1,11 @@
+---
+type: reference
+title: "Decisions"
+description: "Solo decisiones activas. Historial superseded → ARCHIVE/DECISIONS-HISTORY.md"
+tags: [decisions]
+timestamp: 2026-06-20
+---
+
 # DECISIONS.md — Decisiones técnicas vigentes
 
 > Solo decisiones activas. Historial superseded → ARCHIVE/DECISIONS-HISTORY.md
@@ -186,3 +194,14 @@ En perfil: IER global desglosado en 3 sub-scores (corrupción, competencia, adec
 **Fases:** Fase 1 MVP: grafo + secciones estáticas (sin chat). Fase 2: chat RAG. Fase 3: grafo global.
 
 **APIs nuevas:** `GET /api/perfil/{dni}/grafo`, `POST /api/chat/{dni}`.
+
+---
+
+## DEC-021 — Convención de referencias cruzadas
+
+**Fecha:** 2026-06-30  
+**Decisión:** Links Markdown con anclas para todas las referencias cruzadas.  
+Patrón: [DEC-NNN](DECISIONS.md#dec-nnn) — nunca duplicar contenido, solo referenciar.  
+Decisiones superadas: marcar [SUPERSEDED por DEC-XXX] al inicio de la sección.  
+**Estado:** VIGENTE
+

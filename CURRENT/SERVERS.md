@@ -1,3 +1,11 @@
+---
+type: reference
+title: "Servers"
+description: "Estado actual de los servidores y servicios. Solo info vigente."
+tags: [infrastructure]
+timestamp: 2026-05-31
+---
+
 # SERVERS.md — Topología de infraestructura
 
 > Estado actual de los servidores y servicios. Solo info vigente.

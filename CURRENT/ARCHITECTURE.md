@@ -1,3 +1,11 @@
+---
+type: concept
+title: "Architecture"
+description: "Solo estado vigente. Historial de cambios → ARCHIVE/"
+tags: [architecture]
+timestamp: 2026-06-20
+---
+
 # ARCHITECTURE.md — Arquitectura del sistema
 
 > Solo estado vigente. Historial de cambios → ARCHIVE/
