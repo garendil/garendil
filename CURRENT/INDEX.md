@@ -22,7 +22,7 @@ timestamp: 2026-06-30
 ### `runbook` — Protocolos y procedimientos (2)
 | Archivo | Tags |
 |---|---|
-| [AGENTS-PROTOCOL.md](AGENTS-PROTOCOL.md) | protocol |
+| [AGENTS-PROTOCOL.md](AGENTS-PROTOCOL.md) | protocol, agents, workflow |
 | [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | troubleshooting, errors, debugging, runbook |
 
 ### `reference` — Configuración y registros (5)
