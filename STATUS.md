@@ -1,3 +1,21 @@
+
+> ## ⚠️ Verificación de estado — 2026-07-28
+>
+> **Este archivo llevaba 58 días sin actualizarse** (último cambio real: **2026-05-31**). El
+> protocolo fija un máximo de **10 días** ⇒ **todo lo que sigue debajo de este bloque debe tratarse como
+> histórico, no como estado actual.**
+>
+> **Clasificación en el portafolio:** 🟡 viable 🥈 — ver [PORTAFOLIO-ESTADO.md](../../setup-workspaces/PORTAFOLIO-ESTADO.md)
+>
+> **✅ Verificado hoy (actividad de git, dato duro):** **ningún repo con actividad desde 2026-06-30** (`garendil-brain`); el código lleva parado desde **finales de mayo** (`garendil-api` y `garendil-workers` 2026-05-29). El repo `garendil` tiene **15 ficheros sin commitear**
+>
+> **🔴 **Es el de mayor exposición del portafolio** — publica un score sobre personas. Ver [auditoría](../../../setup-workspaces/auditoria-legal/garendil.md) y el principio [afirmar-vs-mostrar](../../../setup-workspaces/standards/afirmar-vs-mostrar.md).**
+>
+> **❌ NO verificado — se reporta `unavailable`, no se inventa:** procesos vivos, servicios desplegados,
+> estado de infraestructura, integraciones con terceros y cualquier cifra operativa citada más abajo.
+> **Antes de tocar nada, pedir diagnóstico** (protocolo diagnóstico, PASO 1).
+
+---
 # STATUS.md — Estado en tiempo real
 
 > **REDIRECT** — Fuente canónica: [`CURRENT/STATUS.md`](CURRENT/STATUS.md)
